@@ -12,7 +12,7 @@ Proyek penelitian statistika ini menganalisis pengaruh pola tidur, intensitas pe
 * **Chandra Rizal Alamsyah** – Penyusunan instrumen survei & variabel penelitian.
 * **Lulu Najla Salsabila** – Pengumpulan data & teknik sampling responden.
 * **Veronica Xavier** – Pengolahan data, analisis statistik, & visualisasi.
-* **Adinda Adelia FP** – Interpretasi hasil & dokumentasi presentasi.
+* **Adinda Adelia Putri** – Interpretasi hasil & dokumentasi presentasi.
 
 ### Metodologi Penelitian
 * **Populasi & Sampel**: 52 Responden mahasiswa aktif ITSB (diolah dari target awal 100 dengan rumus Slovin).
