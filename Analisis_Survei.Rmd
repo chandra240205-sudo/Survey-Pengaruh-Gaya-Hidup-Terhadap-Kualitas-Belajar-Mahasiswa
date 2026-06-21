@@ -1,0 +1,1448 @@
+---
+title: "Survey & Sampling"
+output: 
+  flexdashboard::flex_dashboard:
+    vertical_layout: scroll
+    theme: yeti
+    source_code: embed
+---
+
+<style>
+/* =============================================
+   UAS STATDAS — CLEAN SOFT BLUE THEME v2
+   ============================================= */
+
+/* ── 0. Custom Properties ─────────────────── */
+:root {
+  --uas-primary:       #1a6bbf;
+  --uas-primary-dark:  #1a5a9e;
+  --uas-primary-light: #5ba3e0;
+  --uas-surface:       #ffffff;
+  --uas-bg:            #eef4fb;
+  --uas-border:        #d0e4f7;
+  --uas-text:          #2d3a4a;
+  --uas-text-muted:    #3a4f65;
+  --uas-info-bg:       #f0f7ff;
+  --uas-shadow:        rgba(26, 107, 191, 0.10);
+  --uas-radius-sm:     6px;
+  --uas-radius-md:     8px;
+  --uas-radius-lg:     10px;
+}
+
+/* ── 1. Base ──────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: 'Segoe UI', system-ui, Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  background-color: var(--uas-bg);
+  color: var(--uas-text);
+  overflow-y: auto;
+  height: auto;
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3 { color: var(--uas-primary-dark); }
+h4, h5     { color: var(--uas-primary); }
+
+p          { color: var(--uas-text-muted); line-height: 1.75; }
+ul li,
+ol li      { color: var(--uas-text-muted); line-height: 1.7; margin-bottom: 4px; }
+strong     { color: var(--uas-primary-dark); }
+
+/* ── 2. Navbar ────────────────────────────── */
+.navbar {
+  background-color: var(--uas-primary) !important;
+  border-bottom: 3px solid var(--uas-primary-light);
+  box-shadow: 0 2px 8px rgba(26, 107, 191, 0.25);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 20px;
+  color: #ffffff !important;
+  letter-spacing: 0.3px;
+}
+
+.navbar-nav > li > a {
+  color: #d6eaff !important;
+  font-weight: 500;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.navbar-nav > li > a:hover,
+.navbar-nav > li.active > a {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.18) !important;
+  border-radius: var(--uas-radius-sm);
+}
+
+/* ── 3. Chart Box ─────────────────────────── */
+.chart-wrapper {
+  background-color: var(--uas-surface);
+  border: 1px solid var(--uas-border);
+  border-radius: var(--uas-radius-lg);
+  box-shadow: 0 3px 12px var(--uas-shadow);
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.chart-wrapper:hover {
+  box-shadow: 0 5px 18px rgba(26, 107, 191, 0.15);
+}
+
+.chart-stage {
+  overflow: visible;
+  height: auto;
+}
+
+/* ── 4. Chart Title ───────────────────────── */
+.chart-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--uas-primary);
+  background-color: var(--uas-info-bg);
+  border-bottom: 1px solid var(--uas-border);
+  padding: 10px 15px;
+  border-radius: var(--uas-radius-lg) var(--uas-radius-lg) 0 0;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* ── 5. Tabs ──────────────────────────────── */
+.nav-tabs {
+  border-bottom: 2px solid #aed0f0;
+}
+
+.nav-tabs > li > a {
+  color: #5590c7;
+  font-weight: 500;
+  font-size: 13px;
+  background-color: #f5f9ff;
+  border: 1px solid #cce0f5;
+  border-radius: var(--uas-radius-sm) var(--uas-radius-sm) 0 0;
+  margin-right: 3px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-tabs > li > a:hover {
+  color: var(--uas-primary);
+  background-color: #dceeff;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover {
+  color: #ffffff !important;
+  background-color: var(--uas-primary) !important;
+  border-color: var(--uas-primary) !important;
+  font-weight: 600;
+}
+
+.nav-tabs-custom > .nav-tabs > li.active {
+  border-top-color: var(--uas-primary);
+}
+
+/* ── 6. Interpretasi Box ──────────────────── */
+.interpretasi-box {
+  background-color: var(--uas-info-bg);
+  border-left: 5px solid var(--uas-primary);
+  padding: 13px 16px;
+  margin-top: 12px;
+  margin-bottom: 20px;
+  border-radius: 0 var(--uas-radius-md) var(--uas-radius-md) 0;
+  box-shadow: 0 2px 6px rgba(26, 107, 191, 0.07);
+}
+
+.interpretasi-box p {
+  margin: 0;
+  text-align: justify;
+}
+
+.interpretasi-title {
+  display: block;
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--uas-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 5px;
+}
+
+/* ── 7. Info / Kesimpulan Box ─────────────── */
+.custom-info-box {
+  background-color: var(--uas-surface);
+  border-left: 5px solid var(--uas-primary-light);
+  padding: 16px 20px;
+  margin-bottom: 18px;
+  border-radius: 0 var(--uas-radius-md) var(--uas-radius-md) 0;
+  box-shadow: 0 3px 10px var(--uas-shadow);
+}
+
+/* ── 8. DataTables ────────────────────────── */
+.dataTables_wrapper {
+  font-size: 13.5px;
+}
+
+table.dataTable thead th {
+  background-color: var(--uas-primary);
+  color: #ffffff;
+  border-bottom: 2px solid var(--uas-primary-light);
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+table.dataTable tbody tr:nth-child(odd)  { background-color: #f5f9ff; }
+table.dataTable tbody tr:nth-child(even) { background-color: #ffffff; }
+table.dataTable tbody tr:hover           { background-color: #e8f2fc !important; }
+
+/* ── 9. Scrollbar ─────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--uas-bg); }
+::-webkit-scrollbar-thumb {
+  background-color: #90bde8;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--uas-primary);
+}
+</style>
+  
+```{r setup, include=FALSE}
+packages <- c(
+  "flexdashboard",
+  "tidyverse",
+  "highcharter",
+  "viridis",
+  "DT",
+  "gapminder",
+  "jsonlite"
+)
+
+installed <- packages %in% rownames(installed.packages())
+if (any(!installed)) {
+  install.packages(packages[!installed])
+}
+
+# Load library
+library(flexdashboard)
+library(tidyverse)
+library(highcharter)
+library(viridis)
+library(DT)
+library(gapminder)
+library(jsonlite)
+```
+
+MEMBERS {data-orientation=rows}
+=======================================================================
+
+```{r}
+library(htmltools)
+
+tags$div(
+  tags$style(HTML("
+  
+    body{
+      background:#ffffff;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      padding: 30px;
+      justify-content: center;
+    }
+
+    .my-profile-card {
+      position: relative;
+      background: #ffffff;
+      border: 1px solid #e5e5e5;
+      border-radius: 25px;
+      padding: 25px;
+      text-align: center;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      cursor: pointer;
+      min-height: 350px;
+      color: #222;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.08);
+    }
+
+    .my-profile-card:hover {
+      transform: scale(1.06);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.18);
+    }
+
+    .my-profile-card img {
+      width: 140px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 20px;
+      margin-bottom: 15px;
+      transition: 0.4s ease;
+    }
+
+    .my-profile-card:hover img{
+      transform: scale(1.05);
+    }
+
+    .my-profile-card h3{
+      margin-bottom: 5px;
+      font-size: 22px;
+      color:#111;
+    }
+
+    .my-profile-card p{
+      font-size: 14px;
+      margin-bottom: 10px;
+      color:#444;
+    }
+
+    .my-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: white;
+      margin: 3px;
+      font-weight: bold;
+    }
+
+    .desc {
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.5s ease;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-top: 15px;
+      color:#333;
+    }
+
+    .my-profile-card:hover .desc{
+      opacity: 1;
+      max-height: 300px;
+    }
+
+    .title-main{
+      text-align:center;
+      color:#111;
+      font-size:42px;
+      font-weight:700;
+      margin-top:20px;
+    }
+
+    .subtitle{
+      text-align:center;
+      color:#666;
+      margin-bottom:20px;
+    }
+
+  ")),
+
+  tags$h1(class="title-main","Pembagian Peran Kelompok"),
+  tags$p(class="subtitle","Survey & Sampling Project"),
+
+  tags$div(class = "card-container",
+
+# CHANDRA
+tags$div(class = "my-profile-card",
+
+  tags$img(src = "https://raw.githubusercontent.com/adindaadeliafutri6-gif/chandraa/main/chandra-removebg-preview.png"),
+
+  tags$h3("Chandra Rizal Alamsyah"),
+  tags$p(tags$strong("NIM: "), "52250068"),
+
+  tags$div(
+    tags$span(class = "my-badge", style = "background:#007bff", "R Programming"),
+    tags$span(class = "my-badge", style = "background:#28a745", "Data Science")
+  ),
+
+  tags$div(class="desc",
+    tags$b("Pengolahan Data Menggunakan RStudio"),
+    tags$p("Bertugas melakukan pembersihan data, pengolahan statistik, perhitungan Margin of Error, serta membuat visualisasi data menggunakan RStudio dan RPubs.")
+  )
+),
+
+# ADINDA
+tags$div(class = "my-profile-card",
+
+  tags$img(src = "https://raw.githubusercontent.com/caroldupinopereira-cmyk/adinda/main/adinda_baru-removebg-preview.png"),
+
+  tags$h3("Adinda Adelia Futri"),
+  tags$p(tags$strong("NIM: "), "52250055"),
+
+  tags$div(
+    tags$span(class = "my-badge", style = "background:#17a2b8", "Analytics"),
+    tags$span(class = "my-badge", style = "background:#28a745", "Statistics")
+  ),
+
+  tags$div(class="desc",
+    tags$b("Penyusunan Instrumen Survei"),
+    tags$p("Bertugas menyusun pertanyaan kuesioner, menentukan variabel penelitian, serta memastikan pertanyaan sesuai dengan tujuan survei mengenai gaya hidup dan kualitas belajar mahasiswa.")
+  )
+),
+
+# LULU
+tags$div(class = "my-profile-card",
+
+  tags$img(src = "https://raw.githubusercontent.com/najlasalsabilalulu-cloud/lulunajlaa/main/foto%20lulu.jpeg"),
+
+  tags$h3("Lulu Najla Salsabila"),
+  tags$p(tags$strong("NIM: "), "52250069"),
+
+  tags$div(
+    tags$span(class = "my-badge", style = "background:#ffc107", "Presentation"),
+    tags$span(class = "my-badge", style = "background:#6610f2", "Documentation")
+  ),
+
+  tags$div(class="desc",
+    tags$b("Interpretasi dan Dokumentasi Hasil"),
+    tags$p("Bertugas melakukan interpretasi hasil analisis, menyusun kesimpulan penelitian, serta membuat dokumentasi dan presentasi hasil survei dalam Canva dan RPubs.")
+  )
+),
+
+# VERONICA
+tags$div(class = "my-profile-card",
+
+  tags$img(src = "https://raw.githubusercontent.com/adindaadeliafutri6-gif/vero/main/vero.jpeg"),
+
+  tags$h3("Veronica Xavier"),
+  tags$p(tags$strong("NIM: "), "52250021"),
+
+  tags$div(
+    tags$span(class = "my-badge", style = "background:#dc3545", "Sampling"),
+    tags$span(class = "my-badge", style = "background:#6c757d", "Survey")
+  ),
+
+  tags$div(class="desc",
+    tags$b("Pengumpulan dan Sampling Data"),
+    tags$p("Bertugas menentukan teknik sampling, menyebarkan survei kepada responden, serta mengumpulkan data responden yang digunakan dalam penelitian.")
+  )
+)
+
+  )
+)
+```
+
+
+Pendahuluan {data-orientation=rows}
+=======================================================================
+
+Row
+-----------------------------------------------------------------------
+
+### Latar Belakang
+
+Gaya hidup mahasiswa merupakan salah satu faktor yang dapat mempengaruhi kualitas belajar. Gaya hidup mencakup berbagai kebiasaan sehari-hari seperti pola tidur, penggunaan gadget, aktivitas fisik, serta kebiasaan lain yang dapat berdampak pada proses belajar. Saat ini banyak mahasiswa memiliki kebiasaan seperti begadang, penggunaan media sosial yang tinggi, serta menunda pengerjaan tugas.
+
+Kebiasaan tersebut dapat mempengaruhi konsentrasi belajar, pemahaman materi, serta produktivitas mahasiswa dalam kegiatan akademik. Oleh karena itu, perlu dilakukan survei untuk mengetahui bagaimana gaya hidup mahasiswa berpengaruh terhadap kualitas belajar mereka.
+
+Row
+-----------------------------------------------------------------------
+
+### Tujuan Penelitian
+
+Analisis data ini bertujuan untuk:
+
+1.	Mengetahui gaya hidup mahasiswa ITSB.
+
+2.	Mengetahui kualitas belajar mahasiswa ITSB.
+
+3.	Mengetahui pengaruh gaya hidup terhadap kualitas belajar mahasiswa
+
+Row
+-----------------------------------------------------------------------
+
+### Rumusan Masalah
+
+Berdasarkan latar belakang tersebut, penelitian ini mencoba menjawab pertanyaan:
+
+1.	Bagaimana gaya hidup mahasiswa ITSB dalam kehidupan sehari-hari?
+
+2.	Bagaimana kualitas belajar mahasiswa ITSB?
+
+3.	Apakah gaya hidup mahasiswa mempengaruhi kualitas belajar mahasiswa?
+
+
+Dataset {data-orientation=rows}
+=======================================================================
+  
+### Table
+```{r}
+# 1. Load Library
+library(readxl)
+library(dplyr)
+library(DT)
+library(janitor)
+
+# 2. Membaca file Excel
+df <- readxl::read_excel("C:/Users/Adinda/Downloads/Sampling kel 5(Jawaban).xlsx") %>% 
+  janitor::clean_names()
+
+# 3. Manipulasi Data (Disederhanakan)
+df1 <- df %>% 
+  # Kita matikan dulu fungsi distinct dan filter untuk mengecek data asli
+  # dplyr::distinct(across(contains("name")), .keep_all = TRUE) %>% 
+  # filter(across(contains("rating"), ~ .x >= 4.5)) %>% 
+  select(everything()) 
+
+# 4. Menampilkan tabel
+datatable(
+  df1, 
+  options = list(
+    scrollX = TRUE, 
+    pageLength = 10
+  ),
+  caption = htmltools::tags$caption(
+    style = 'caption-side: bottom; text-align: center;',
+    'Table: Data Sampling Kelompok 5 (Cek Seluruh Baris)'
+  )
+)
+```
+
+Metodologi & Sampling {data-orientation=rows}
+=======================================================================
+
+Row
+-----------------------------------------------------------------------
+
+### Metode Pengambilan Sampel
+
+Penelitian ini menggunakan teknik **Non-Probability Sampling**, khususnya **Convenience Sampling**. Responden dipilih berdasarkan kesediaan dan aksesibilitas peneliti terhadap populasi mahasiswa. Meskipun metode ini memiliki keterbatasan dalam generalisasi ke seluruh populasi mahasiswa secara luas, hasil yang diperoleh memberikan gambaran awal yang signifikan mengenai tren gaya hidup di lingkungan akademik terkait.
+
+Row
+-----------------------------------------------------------------------
+
+### Landasan Probabilitas & Teori
+
+Setiap butir pertanyaan dalam kuesioner ini dipandang sebagai sebuah **Variabel Acak Bernoulli**, di mana hasil dari setiap responden hanya memiliki dua kemungkinan (Ya atau Tidak). Secara kolektif, jawaban-jawaban ini membentuk **Distribusi Binomial**. Kami menggunakan pendekatan **Distribusi Normal** (melalui *Central Limit Theorem*) untuk mengestimasi proporsi populasi berdasarkan sampel yang ada.
+
+Row
+-----------------------------------------------------------------------
+
+### Estimasi Statistik (Confidence Interval 95%)
+
+Untuk mengukur tingkat kepercayaan dari data yang dikumpulkan, kami menerapkan perhitungan **Interval Kepercayaan (CI)**. Kami menggunakan tingkat kepercayaan **95%** dengan nilai kritis **Z = 1.96**.
+
+**Rumus Estimasi Proporsi:**
+$$ \hat{p} \pm 1.96 \times \sqrt{\frac{\hat{p}(1-\hat{p})}{n}} $$
+
+Di mana:
+* **$\hat{p}$**: Proporsi responden yang menjawab "Ya" pada sampel.
+* **$n$**: Ukuran sampel (total responden).
+
+Row
+-----------------------------------------------------------------------
+
+### Visualisasi Teori: Kurva Distribusi Normal (Z-Score)
+
+```{r}
+library(plotly)
+
+# Simulasi Kurva Normal Standar
+x_val <- seq(-4, 4, length.out = 1000)
+y_val <- dnorm(x_val)
+
+# Membuat plot kurva normal standar dengan Plotly
+p_norm <- plot_ly(x = ~x_val, y = ~y_val, type = 'scatter', mode = 'lines', 
+                  line = list(color = '#7BAFC4', width = 3),
+                  name = 'Normal Dist') %>%
+  # Menambahkan area shading 95%
+  add_polygons(x = c(-1.96, seq(-1.96, 1.96, length.out = 100), 1.96),
+               y = c(0, dnorm(seq(-1.96, 1.96, length.out = 100)), 0),
+               fillcolor = 'rgba(168, 216, 200, 0.5)',
+               line = list(color = 'transparent'),
+               name = '95% Confidence Level',
+               hoverinfo = "none") %>%
+  layout(title = "Distribusi Normal: Area Kepercayaan 95% (Z = 1.96)",
+         xaxis = list(title = "Z-Score", range = c(-4, 4)),
+         yaxis = list(title = "Density"),
+         showlegend = FALSE)
+
+p_norm
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Visualisasi Aplikasi: Margin of Error Variabel Utama
+
+```{r}
+# Fungsi hitung CI otomatis
+calc_ci <- function(var_name, label) {
+  n <- nrow(df)
+  p_hat <- sum(df[[var_name]] == "Ya", na.rm = TRUE) / n
+  moe <- 1.96 * sqrt((p_hat * (1 - p_hat)) / n)
+  return(data.frame(Variabel = label, Proporsi = p_hat, Lower = p_hat - moe, Upper = p_hat + moe))
+}
+
+# Mengambil 3 variabel kunci untuk contoh
+ci_results <- rbind(
+  calc_ci("saya_mampu_menjelaskan_kembali_materi_yang_telah_dipelajari", "Pemahaman Materi"),
+  calc_ci("saya_sering_begadang_untuk_aktivitas_non_akademik", "Sering Begadang"),
+  calc_ci("saya_menggunakan_gadget_lebih_dari_tiga_jam_per_hari_di_luar_keperluan_belajar", "Gadget > 3 Jam")
+)
+
+# Plotting Error Bars menggunakan Plotly
+plot_ly(ci_results, x = ~Proporsi, y = ~reorder(Variabel, Proporsi), 
+        type = 'scatter', mode = 'markers',
+        marker = list(size = 14, color = '#FBBE89', symbol = 'diamond'),
+        error_x = list(type = 'data', 
+                       array = ~Upper - Proporsi, 
+                       thickness = 2,
+                       width = 5,
+                       color = '#F4A87A')) %>%
+  layout(title = "Estimasi Proporsi Populasi (Margin of Error)",
+         xaxis = list(title = "Proporsi (0 - 1)", range = c(0, 1), tickformat = ".0%"),
+         yaxis = list(title = ""))
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Ringkasan Validitas Sampel
+
+```{r}
+n_total <- nrow(df)
+# Menghitung MoE konservatif (p=0.5) untuk keseluruhan dataset
+avg_moe <- 1.96 * sqrt((0.5 * 0.5) / n_total)
+```
+
+Statistik Akhir:
+
+* Total Responden ($n$): r n_total Mahasiswa
+
+* Tingkat Kepercayaan: 95%
+
+* Maksimum Margin of Error: ±r round(avg_moe * 100, 2)%
+
+Kesimpulan Metodologi: Dengan jumlah responden sebanyak r n_total dan Margin of Error yang terkendali, data ini memiliki tingkat validitas yang cukup untuk menggambarkan perilaku kelompok mahasiswa dalam ruang lingkup survei ini. Hasil analisis pada tab berikutnya harus dibaca dengan mempertimbangkan rentang kesalahan ini.
+
+
+Pemeriksaan Variabel Individu {data-orientation=rows}
+=======================================================================
+
+Row
+-----------------------------------------------------------------------
+
+### Analisis Distribusi Variabel Mandiri
+
+Bagian ini menyajikan pemeriksaan mendalam terhadap setiap variabel yang dikumpulkan dalam survei. Kami menggunakan visualisasi bar chart untuk melihat kecenderungan perilaku mahasiswa secara individu sebelum melakukan analisis korelasi lebih lanjut.
+
+Row
+-----------------------------------------------------------------------
+
+### Program Studi
+
+```{r donut_chart_plotly, message=FALSE, warning=FALSE}
+# 1. Load library utama (Pastikan sudah install.packages("plotly") ya bang)
+library(dplyr)
+library(plotly)
+library(stringr)
+
+# 2. Preprocessing Data: Gabungkan prodi dengan jumlah 1 responden
+data_plotly <- df %>%
+  group_by(program_studi) %>%
+  summarise(Jumlah = n(), .groups = 'drop') %>%
+  # Logika gabungan: Jika cuma 1 mhs, masuk ke "Prodi Lainnya"
+  mutate(prodi_clean = ifelse(Jumlah == 1, "Prodi Lainnya", program_studi)) %>%
+  group_by(prodi_clean) %>%
+  summarise(Jumlah = sum(Jumlah), .groups = 'drop') %>%
+  mutate(Persentase = (Jumlah / sum(Jumlah)) * 100) %>%
+  arrange(desc(prodi_clean == "Prodi Lainnya"), desc(Jumlah))
+
+# 3. MEMBUAT INTERAKTIF DONUT CHART PAKE PLOTLY
+plot_ly(data_plotly, 
+        labels = ~prodi_clean, 
+        values = ~Jumlah, 
+        type = 'pie',
+        hole = 0.6, # KUNCI RAHASIA: Mengosongkan tengah lingkaran sebesar 60% biar jadi donut
+        textposition = 'inside',
+        textinfo = 'percent', # Menampilkan persen langsung di dalam potongan cincin
+        insidetextfont = list(color = '#FFFFFF', font = "sans"),
+        hoverinfo = 'text',
+        # Kustomisasi teks yang muncul pas kursor digeser ke atas grafik
+        text = ~paste0("<b>Prodi:</b> ", prodi_clean, 
+                       "<br><b>Jumlah:</b> ", Jumlah, " Responden",
+                       "<br><b>Kontribusi:</b> ", round(Persentase, 1), "%"),
+        marker = list(colors = RColorBrewer::brewer.pal(length(data_plotly$prodi_clean), "Pastel2"),
+                      line = list(color = '#FFFFFF', width = 1.5))) %>%
+  layout(
+    title = list(
+      text = "<b>Distribusi Responden Berdasarkan Program Studi</b><br><span style='font-size:12px; color:#7f8c8d;'>Kategori 1 Responden Digabung ke 'Prodi Lainnya'</span>",
+      font = list(family = "sans", size = 16, color = "#2c3e50"),
+      margin = list(t = 20)
+    ),
+    xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+    yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+    legend = list(orientation = 'h', y = -0.1, x = 0.1, font = list(size = 10)), # Legenda ditaruh horizontal di bawah biar gak makan tempat
+    margin = list(l = 20, r = 20, b = 40, t = 60)
+  )
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Interpretasi:
+
+Berdasarkan grafik Donut Chart, komposisi latar belakang akademik responden kelompok kami memiliki karakteristik sebagai berikut:
+
+* Dominasi Rumpun Komputasi (Sains Data & Informatika): Mayoritas responden berasal dari prodi Sains Data dan Informatika. Hal ini karena penyebaran kuesioner berpusat di internal jurusan tersebut. Kelebihannya, data ini sangat akurat untuk memotret pola belajar dan beban tugas spesifik mahasiswa rumpun teknologi/komputasi.
+
+* Keterwakilan Rumpun Teknik (Metalurgi, Sipil, Perminyakan): Survei juga berhasil menjaring mahasiswa dari berbagai jurusan teknik. Karakteristik mahasiswa teknik yang punya jadwal padat, praktikum, dan tugas hitungan berat sangat relevan untuk menguji dampak gaya hidup (tidur, gadget, olahraga) terhadap kualitas belajar mereka.
+
+* Kategorisasi "Prodi Lainnya" Lebih Efektif: Jurusan yang hanya diisi oleh 1 orang responden sengaja dilebur menjadi satu ke dalam kelompok "Prodi Lainnya". Secara metodologi, ini dilakukan agar visualisasi grafik tetap bersih dan proporsional, serta menghindari bias analisis akibat jumlah sampel yang terlalu sedikit (underrepresented).
+
+Row
+-----------------------------------------------------------------------
+
+### Kualitas Tidur
+  
+```{r chart_kualitas_tidur, message=FALSE, warning=FALSE}
+# 1. Load library utama
+library(dplyr)
+library(plotly)
+
+# 2. Preprocessing Data: Hitung total jawaban "Ya" vs "Tidak"
+data_tidur <- df %>%
+  group_by(saya_tidur_cukup_7_8_jam_dalam_sehari) %>%
+  summarise(Jumlah = n(), .groups = 'drop') %>%
+  mutate(Persentase = (Jumlah / sum(Jumlah)) * 100)
+
+# 3. MEMBUAT INTERAKTIF DONUT CHART KHUSUS KUALITAS TIDUR
+plot_ly(data_tidur, 
+        labels = ~saya_tidur_cukup_7_8_jam_dalam_sehari, 
+        values = ~Jumlah, 
+        type = 'pie',
+        hole = 0.55, # Membuat lubang tengah donut sebesar 55%
+        textposition = 'inside',
+        textinfo = 'percent', # Tampilkan persentase di dalam cincin
+        insidetextfont = list(color = '#FFFFFF', font = "sans", size = 14),
+        hoverinfo = 'text',
+        # Kustomisasi text pop-up pas di-hover kursor
+        text = ~paste0("<b>Kecukupan Tidur:</b> ", saya_tidur_cukup_7_8_jam_dalam_sehari, 
+                       "<br><b>Jumlah:</b> ", Jumlah, " Mahasiswa",
+                       "<br><b>Proporsi:</b> ", round(Persentase, 1), "%"),
+        # Palette warna abu-abu soft profesional dan biru gelap kalem
+        marker = list(colors = c("#bdc3c7", "#2c3e50"), 
+                      line = list(color = '#FFFFFF', width = 2))) %>%
+  layout(
+    title = list(
+      text = "<b>Distribusi Responden: Kecukupan Tidur 7-8 Jam Sehari</b>",
+      font = list(family = "sans", size = 15, color = "#2c3e50"),
+      padding = list(b = 10)
+    ),
+    xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+    yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+    legend = list(orientation = 'h', y = -0.1, x = 0.35, font = list(size = 11)), # Legenda rapi di bawah tengah
+    margin = list(l = 40, r = 40, b = 40, t = 60)
+  )
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Interpretasi:
+
+Berdasarkan grafik Donut Chart khusus kualitas tidur, sebaran kondisi istirahat responden menunjukkan poin-poin inti berikut:
+
+* Potret Realitas Beban Mahasiswa: Proporsi responden yang menjawab "Tidak" (kurang tidur/sering begadang) memperlihatkan realitas umum di dunia perkuliahan. Banyaknya tugas coding, laporan praktikum, atau sekadar manajemen waktu yang kurang ketat untuk aktivitas non-akademik menjadi pemicu utama mayoritas mahasiswa kekurangan waktu istirahat yang ideal.
+
+* Kelompok Minoritas yang Ideal: Sebaliknya, sebagian responden yang menjawab "Ya" menunjukkan kelompok mahasiswa yang berhasil mempertahankan regulasi diri dan manajemen energi yang baik di tengah padatnya jadwal kuliah.
+
+* Implikasi ke Kapasitas Belajar: Data tunggal ini menjadi fondasi penting yang menjelaskan mengapa pada analisis pilar sebelumnya, performa kognitif seperti daya konsentrasi dan kemampuan mengingat materi kuliah sering kali drop pada mahasiswa yang jam tidurnya berantakan.
+
+Row
+-----------------------------------------------------------------------
+
+### Aktivitas Fisik
+
+```{r chart_aktivitas_fisik, message=FALSE, warning=FALSE}
+# 1. Load library utama
+library(dplyr)
+library(plotly)
+
+# 2. Preprocessing Data: Hitung total jawaban "Ya" vs "Tidak" untuk Olahraga
+data_olahraga <- df %>%
+  group_by(saya_berolahraga_minimal_satu_kali_dalam_seminggu) %>%
+  summarise(Jumlah = n(), .groups = 'drop') %>%
+  mutate(Persentase = (Jumlah / sum(Jumlah)) * 100)
+
+# 3. MEMBUAT INTERAKTIF DONUT CHART KHUSUS AKTIVITAS FISIK
+plot_ly(data_olahraga, 
+        labels = ~saya_berolahraga_minimal_satu_kali_dalam_seminggu, 
+        values = ~Jumlah, 
+        type = 'pie',
+        hole = 0.55, # Konsisten bolong tengah 55% biar serasi
+        textposition = 'inside',
+        textinfo = 'percent', # Tampilkan persentase di dalam cincin donut
+        insidetextfont = list(color = '#FFFFFF', font = "sans", size = 14),
+        hoverinfo = 'text',
+        # Kustomisasi text pop-up pas di-hover kursor
+        text = ~paste0("<b>Rutin Olahraga:</b> ", saya_berolahraga_minimal_satu_kali_dalam_seminggu, 
+                       "<br><b>Jumlah:</b> ", Jumlah, " Mahasiswa",
+                       "<br><b>Proporsi:</b> ", round(Persentase, 1), "%"),
+        # Palette warna hijau pastel soft khas kebugaran dan abu-abu kalem
+        marker = list(colors = c("#bdc3c7", "#27ae60"), 
+                      line = list(color = '#FFFFFF', width = 2))) %>%
+  layout(
+    title = list(
+      text = "<b>Distribusi Responden: Rutin Olahraga Minimal 1x Seminggu</b>",
+      font = list(family = "sans", size = 15, color = "#2c3e50"),
+      padding = list(b = 10)
+    ),
+    xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+    yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+    legend = list(orientation = 'h', y = -0.1, x = 0.35, font = list(size = 11)), # Legenda rapi di bawah tengah
+    margin = list(l = 40, r = 40, b = 40, t = 60)
+  )
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Interpretasi:
+
+Berdasarkan grafik Donut Chart khusus aktivitas fisik, sebaran kebiasaan olahraga responden menunjukkan poin-poin inti berikut:
+
+Tingginya Pola Hidup Sedenter (Kurang Gerak): Proporsi responden yang menjawab "Tidak" mencerminkan tingginya pola hidup sedentary di kalangan mahasiswa. Padatnya jadwal kuliah duduk di kelas, tugas di depan laptop, dan kurangnya motivasi membuat aktivitas fisik sering kali dikesampingkan.
+
+Tantangan Konsistensi Kebugaran: Kelompok responden yang menjawab "Ya" menunjukkan sebagian kecil mahasiswa yang sadar dan berkomitmen meluangkan waktu khusus untuk menjaga kebugaran tubuh di tengah kesibukan akademik.
+
+Implikasi ke Ketahanan Mental: Data ini krusial karena kurangnya olahraga berkorelasi langsung dengan tingkat stres yang lebih tinggi dan fisik yang lebih cepat lelah (gampang ngantuk). Mahasiswa yang tidak aktif bergerak kehilangan kesempatan untuk memicu hormon endorfin yang berfungsi mereduksi kejenuhan belajar.
+
+Row
+-----------------------------------------------------------------------
+
+### Penggunaan Gadget
+
+```{r chart_penggunaan_gadget, message=FALSE, warning=FALSE}
+# 1. Load library utama
+library(dplyr)
+library(plotly)
+
+# 2. Preprocessing Data: Hitung total jawaban "Ya" vs "Tidak" untuk Kontrol Gadget
+data_gadget <- df %>%
+  group_by(saya_mampu_mengontrol_penggunaan_gadget_saat_sedang_belajar) %>%
+  summarise(Jumlah = n(), .groups = 'drop') %>%
+  mutate(Persentase = (Jumlah / sum(Jumlah)) * 100)
+
+# 3. MEMBUAT INTERAKTIF DONUT CHART KHUSUS KONTROL GADGET
+plot_ly(data_gadget, 
+        labels = ~saya_mampu_mengontrol_penggunaan_gadget_saat_sedang_belajar, 
+        values = ~Jumlah, 
+        type = 'pie',
+        hole = 0.55, # Konsisten bolong tengah 55% biar serasi pas dijajarkan
+        textposition = 'inside',
+        textinfo = 'percent', # Tampilkan persentase di dalam cincin donut
+        insidetextfont = list(color = '#FFFFFF', font = "sans", size = 14),
+        hoverinfo = 'text',
+        # Kustomisasi text pop-up pas kursor diarahkan ke atas grafik
+        text = ~paste0("<b>Mampu Kontrol HP:</b> ", saya_mampu_mengontrol_penggunaan_gadget_saat_sedang_belajar, 
+                       "<br><b>Jumlah:</b> ", Jumlah, " Mahasiswa",
+                       "<br><b>Proporsi:</b> ", round(Persentase, 1), "%"),
+        # Palette warna biru soft (teknologi/digital) dan abu-abu kalem
+        marker = list(colors = c("#bdc3c7", "#2980b9"), 
+                      line = list(color = '#FFFFFF', width = 2))) %>%
+  layout(
+    title = list(
+      text = "<b>Distribusi Responden: Kemampuan Mengontrol Penggunaan Gadget</b>",
+      font = list(family = "sans", size = 15, color = "#2c3e50"),
+      padding = list(b = 10)
+    ),
+    xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+    yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+    legend = list(orientation = 'h', y = -0.1, x = 0.35, font = list(size = 11)), # Legenda rapi di bawah tengah
+    margin = list(l = 40, r = 40, b = 40, t = 60)
+  )
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Interpretasi:
+
+Berdasarkan grafik Donut Chart khusus kontrol gadget, sebaran tingkat regulasi diri digital responden menunjukkan poin-poin inti berikut:
+
+* Tantangan Distraksi Digital Tinggi: Proporsi responden yang menjawab "Tidak" mengindikasikan bahwa mayoritas mahasiswa sangat rentan terhadap digital distraction. Dorongan impulsif untuk membuka media sosial, game, atau mengecek notifikasi saat belajar menjadi tantangan terbesar bagi generasi mahasiswa saat ini.
+
+* Tingkat Regulasi Diri yang Kuat: Di sisi lain, responden yang menjawab "Ya" menunjukkan kelompok mahasiswa yang sudah memiliki digital self-regulation yang baik. Mereka mampu membatasi diri dan menjaga fokus dari godaan gawai ketika sedang mencerna materi atau menyelesaikan tugas.
+
+* Implikasi ke Efisiensi Belajar: Data ini menjelaskan mengapa pada analisis pilar sebelumnya, kelompok yang tidak mampu mengontrol gadget merasa waktu belajarnya habis sia-sia (tidak efektif). Distraksi gadget yang konstan memecah konsentrasi mendalam (deep work) yang sangat dibutuhkan untuk tugas-tugas berat seperti coding atau hitungan.
+
+Appendix {data-orientation=rows}
+=======================================================================
+
+Row
+-----------------------------------------------------------------------
+
+### Kualitas Tidur
+
+```{r visualisasi_pilar1, fig.width=10, fig.height=6, fig.align='center'}
+# ==============================================================================
+# APPENDIX - PILAR 1: MANAJEMEN ENERGI & ISTIRAHAT
+# ==============================================================================
+
+library(dplyr)
+library(tidyr)
+library(plotly)
+library(knitr)
+library(kableExtra)
+
+# ------------------------------------------------------------------------------
+# 0. MAPPING KOLOM (snake_case sesuai preprocessing df)
+# ------------------------------------------------------------------------------
+kolom_tidur    <- "saya_tidur_cukup_7_8_jam_dalam_sehari"
+kolom_begadang <- "saya_sering_begadang_untuk_aktivitas_non_akademik"
+
+var_pilar1 <- c(
+  "saya_tidur_cukup_7_8_jam_dalam_sehari",
+  "saya_sering_begadang_untuk_aktivitas_non_akademik",
+  "saya_sering_merasa_mengantuk_saat_mengikuti_perkuliahan",
+  "saya_mudah_mengingat_materi_perkuliahan",
+  "saya_mampu_menjelaskan_kembali_materi_yang_telah_dipelajari",
+  "waktu_belajar_saya_digunakan_secara_efektif",
+  "saya_belajar_secara_konsisten_setiap_hari",
+  "saya_aktif_bertanya_berdiskusi_di_kelas",
+  "saya_berpartisipasi_dalam_kegiatan_perkuliahan",
+  "saya_dapat_menyelesaikan_tugas_tanpa_banyak_kesulitan",
+  "saya_merasa_proses_belajar_saya_terarah_dan_terencana"
+)
+
+label_pendek <- c(
+  "saya_tidur_cukup_7_8_jam_dalam_sehari"                         = "Tidur Cukup",
+  "saya_sering_begadang_untuk_aktivitas_non_akademik"             = "Sering Begadang",
+  "saya_sering_merasa_mengantuk_saat_mengikuti_perkuliahan"       = "Sering Mengantuk",
+  "saya_mudah_mengingat_materi_perkuliahan"                       = "Mudah Mengingat",
+  "saya_mampu_menjelaskan_kembali_materi_yang_telah_dipelajari"   = "Menjelaskan Materi",
+  "waktu_belajar_saya_digunakan_secara_efektif"                   = "Waktu Efektif",
+  "saya_belajar_secara_konsisten_setiap_hari"                     = "Belajar Konsisten",
+  "saya_berpartisipasi_dalam_kegiatan_perkuliahan"                = "Berpartisipasi Kuliah",
+  "saya_dapat_menyelesaikan_tugas_tanpa_banyak_kesulitan"         = "Tugas Tanpa Kesulitan",
+  "saya_merasa_proses_belajar_saya_terarah_dan_terencana"         = "Belajar Terencana"
+)
+
+# ------------------------------------------------------------------------------
+# CEGAH ERROR: pastikan semua kolom ada di df
+# ------------------------------------------------------------------------------
+kolom_tidak_ada <- setdiff(var_pilar1, names(df))
+if (length(kolom_tidak_ada) > 0) {
+  stop("Kolom berikut tidak ditemukan di df:\n", paste(kolom_tidak_ada, collapse = "\n"))
+}
+
+# ------------------------------------------------------------------------------
+# 2. GROUPED HORIZONTAL BAR CHART
+# ------------------------------------------------------------------------------
+kolom_y_positif <- c(
+  "saya_mampu_berkonsentrasi_dalam_waktu_lama_saat_belajar",
+  "saya_mudah_mengingat_materi_perkuliahan",
+  "saya_mampu_menjelaskan_kembali_materi_yang_telah_dipelajari",
+  "waktu_belajar_saya_digunakan_secara_efektif",
+  "saya_belajar_secara_konsisten_setiap_hari",
+  "saya_aktif_bertanya_berdiskusi_di_kelas",
+  "saya_berpartisipasi_dalam_kegiatan_perkuliahan",
+  "saya_dapat_menyelesaikan_tugas_tanpa_banyak_kesulitan",
+  "saya_merasa_proses_belajar_saya_terarah_dan_terencana"
+)
+kolom_y_negatif <- c(
+  "saya_sering_merasa_mengantuk_saat_mengikuti_perkuliahan"
+)
+kolom_y_semua <- c(kolom_y_positif, kolom_y_negatif)
+
+# Hitung n per kondisi
+n_kondisi <- df %>%
+  mutate(kondisi = ifelse(
+    .data[[kolom_tidur]] == "Ya" & .data[[kolom_begadang]] == "Tidak",
+    "Baik", "Kurang"
+  )) %>%
+  count(kondisi)
+
+n_baik   <- n_kondisi$n[n_kondisi$kondisi == "Baik"]
+n_kurang <- n_kondisi$n[n_kondisi$kondisi == "Kurang"]
+
+# Preprocessing skor
+data_pilar1 <- df %>%
+  mutate(kondisi = ifelse(
+    .data[[kolom_tidur]] == "Ya" & .data[[kolom_begadang]] == "Tidak",
+    "Baik", "Kurang"
+  )) %>%
+  mutate(across(all_of(kolom_y_positif), ~ ifelse(. == "Ya",   1, 0))) %>%
+  mutate(across(all_of(kolom_y_negatif), ~ ifelse(. == "Tidak", 1, 0))) %>%
+  select(kondisi, all_of(kolom_y_semua)) %>%
+  pivot_longer(cols = -kondisi, names_to = "variabel_asli", values_to = "skor") %>%
+  group_by(kondisi, variabel_asli) %>%
+  summarise(persentase = round(mean(skor, na.rm = TRUE) * 100, 1), .groups = "drop") %>%
+  mutate(nama_indikator = label_pendek[variabel_asli])
+
+# Urutan indikator
+urutan_ind <- data_pilar1 %>%
+  group_by(nama_indikator) %>%
+  summarise(avg = mean(persentase)) %>%
+  arrange(avg) %>%
+  pull(nama_indikator)
+
+data_pilar1$nama_indikator <- factor(data_pilar1$nama_indikator, levels = urutan_ind)
+
+d_baik   <- data_pilar1 %>% filter(kondisi == "Baik")
+d_kurang <- data_pilar1 %>% filter(kondisi == "Kurang")
+
+# Plot
+plot_ly() %>%
+  add_bars(
+    data          = d_kurang,
+    x             = ~persentase,
+    y             = ~nama_indikator,
+    orientation   = "h",
+    name          = paste0("Kurang (n=", n_kurang, ")"),
+    marker        = list(color = "#bdc3c7"),
+    text          = ~paste0(persentase, "%"),
+    textposition  = "outside",
+    hovertemplate = "<b>%{y}</b><br>Kondisi: Kurang<br>Capaian Positif: %{x}%<extra></extra>"
+  ) %>%
+  add_bars(
+    data          = d_baik,
+    x             = ~persentase,
+    y             = ~nama_indikator,
+    orientation   = "h",
+    name          = paste0("Baik (n=", n_baik, ")"),
+    marker        = list(color = "#2c3e50"),
+    text          = ~paste0(persentase, "%"),
+    textposition  = "outside",
+    hovertemplate = "<b>%{y}</b><br>Kondisi: Baik<br>Capaian Positif: %{x}%<extra></extra>"
+  ) %>%
+  layout(
+    barmode = "group",
+    title = list(
+      text = "<b>Pilar 1: Manajemen Energi & Istirahat</b><br><sup>Perbandingan Capaian Positif Indikator Kualitas Belajar (Y)</sup>",
+      font = list(size = 15, color = "#2c3e50")
+    ),
+    xaxis = list(
+      title      = "Persentase Capaian Positif (%)",
+      range      = c(0, 120),
+      ticksuffix = "%"
+    ),
+    yaxis  = list(title = ""),
+    legend = list(orientation = "h", x = 0.25, y = -0.15),
+    margin = list(l = 10, r = 60, t = 90, b = 70),
+    annotations = list(list(
+      text      = paste0(
+        "Kondisi Baik = Tidur Cukup & Tidak Sering Begadang | ",
+        "Total responden: ", nrow(df), " | Sumber: Data Kelompok 5"
+      ),
+      xref      = "paper", yref = "paper",
+      x = 0.5,  y = -0.22,
+      showarrow = FALSE,
+      font      = list(size = 10, color = "#95a5a6"),
+      xanchor   = "center"
+    ))
+  )
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Interpretasi:
+
+Berdasarkan visualisasi Grouped Horizontal Bar Chart Pilar 1, data komparatif persentase capaian positif indikator kualitas belajar ($Y$) berdasarkan kondisi istirahat mahasiswa menunjukkan tren yang konsisten: mahasiswa dengan kondisi istirahat **"Baik"** secara keseluruhan mencatatkan capaian positif yang lebih tinggi pada seluruh indikator dibandingkan kelompok **"Kurang"**. Berikut adalah poin-poin analisis inti:
+
+* **Optimalisasi Fungsi Kognitif:** Perbedaan paling signifikan terlihat pada indikator fungsi kognitif dasar seperti kemampuan konsentrasi lama, kemudahan mengingat, dan kemampuan menjelaskan kembali materi. Pemenuhan kebutuhan tidur ideal (7–8 jam sehari) mengoptimalkan proses konsolidasi memori di otak, sedangkan kelompok kurang tidur mengalami kelelahan mental (*cognitive fatigue*) yang menghambat daya serap materi.
+
+* **Efisiensi Manajemen Waktu:** Kelompok dengan istirahat yang baik memiliki keunggulan pada indikator efektivitas waktu dan konsistensi belajar harian. Energi fisik yang prima meminimalisasi kecenderungan menunda tugas (prokrastinasi), sehingga tugas-tugas perkuliahan dapat diselesaikan dengan tingkat kesulitan yang lebih rendah.
+
+* **Partisipasi Aktif di Kelas:** Kesiapan energi berbanding lurus dengan keterlibatan mahasiswa dalam forum akademik. Mahasiswa yang kebutuhan istirahatnya terpenuhi jauh lebih aktif bertanya dan berpartisipasi dalam perkuliahan, sementara kelompok defisit tidur cenderung pasif akibat munculnya rasa kantuk di kelas (*somnolen*).
+
+Row
+-----------------------------------------------------------------------
+
+```{r visualisasi_pilar2, fig.width=10, fig.height=4, fig.align='center'}
+### Distraksi Gadget
+# ==============================================================================
+# PILAR 2: KONTROL ATENSI DIGITAL (GADGET)
+# X: Penggunaan & Distraksi Gadget vs Kontrol Diri
+# Y: Indikator Kualitas Belajar
+# ==============================================================================
+
+library(dplyr)
+library(tidyr)
+library(plotly)
+library(knitr)
+library(kableExtra)
+
+# ------------------------------------------------------------------------------
+# 0. DEFINISI KOLOM
+# ------------------------------------------------------------------------------
+kolom_overuse   <- "saya_menggunakan_gadget_lebih_dari_tiga_jam_per_hari_di_luar_keperluan_belajar"
+kolom_distraksi <- "saya_sering_terdistraksi_oleh_gadget_saat_sedang_belajar"
+kolom_kontrol   <- "saya_mampu_mengontrol_penggunaan_gadget_saat_sedang_belajar"
+
+var_pilar2 <- c(
+  "saya_menggunakan_gadget_lebih_dari_tiga_jam_per_hari_di_luar_keperluan_belajar",
+  "saya_sering_terdistraksi_oleh_gadget_saat_sedang_belajar",
+  "saya_mampu_mengontrol_penggunaan_gadget_saat_sedang_belajar"
+)
+
+label_x_pilar2 <- c(
+  "saya_menggunakan_gadget_lebih_dari_tiga_jam_per_hari_di_luar_keperluan_belajar" = "Gadget >3 Jam/Hari",
+  "saya_sering_terdistraksi_oleh_gadget_saat_sedang_belajar"                       = "Sering Terdistraksi Gadget",
+  "saya_mampu_mengontrol_penggunaan_gadget_saat_sedang_belajar"                    = "Mampu Kontrol Gadget"
+)
+
+# Variabel Y (sama seperti pilar sebelumnya)
+kolom_y_positif <- c(
+  "saya_mampu_berkonsentrasi_dalam_waktu_lama_saat_belajar",
+  "saya_mudah_mengingat_materi_perkuliahan",
+  "saya_mampu_menjelaskan_kembali_materi_yang_telah_dipelajari",
+  "waktu_belajar_saya_digunakan_secara_efektif",
+  "saya_belajar_secara_konsisten_setiap_hari",
+  "saya_aktif_bertanya_berdiskusi_di_kelas",
+  "saya_berpartisipasi_dalam_kegiatan_perkuliahan",
+  "saya_dapat_menyelesaikan_tugas_tanpa_banyak_kesulitan",
+  "saya_merasa_proses_belajar_saya_terarah_dan_terencana"
+)
+kolom_y_negatif <- c(
+  "saya_sering_merasa_mengantuk_saat_mengikuti_perkuliahan"
+)
+kolom_y_semua <- c(kolom_y_positif, kolom_y_negatif)
+
+label_y <- c(
+  "saya_mampu_berkonsentrasi_dalam_waktu_lama_saat_belajar"       = "Konsentrasi Lama",
+  "saya_mudah_mengingat_materi_perkuliahan"                       = "Mudah Mengingat",
+  "saya_mampu_menjelaskan_kembali_materi_yang_telah_dipelajari"   = "Menjelaskan Materi",
+  "waktu_belajar_saya_digunakan_secara_efektif"                   = "Waktu Efektif",
+  "saya_belajar_secara_konsisten_setiap_hari"                     = "Belajar Konsisten",
+  "saya_dapat_menyelesaikan_tugas_tanpa_banyak_kesulitan"         = "Tugas Tanpa Kesulitan",
+  "saya_merasa_proses_belajar_saya_terarah_dan_terencana"         = "Belajar Terencana"
+)
+
+# ------------------------------------------------------------------------------
+# 2. BUAT KONDISI: Baik vs Kurang
+# Baik = tidak overuse gadget + tidak terdistraksi + mampu kontrol
+# ------------------------------------------------------------------------------
+n_kondisi2 <- df %>%
+  mutate(kondisi = ifelse(
+    .data[[kolom_overuse]]   == "Tidak" &
+    .data[[kolom_distraksi]] == "Tidak" &
+    .data[[kolom_kontrol]]   == "Ya",
+    "Baik", "Kurang"
+  )) %>%
+  count(kondisi)
+
+n2_baik   <- n_kondisi2$n[n_kondisi2$kondisi == "Baik"]
+n2_kurang <- n_kondisi2$n[n_kondisi2$kondisi == "Kurang"]
+
+# ------------------------------------------------------------------------------
+# 3. PREPROCESSING SKOR
+# ------------------------------------------------------------------------------
+data_pilar2 <- df %>%
+  mutate(kondisi = ifelse(
+    .data[[kolom_overuse]]   == "Tidak" &
+    .data[[kolom_distraksi]] == "Tidak" &
+    .data[[kolom_kontrol]]   == "Ya",
+    "Baik", "Kurang"
+  )) %>%
+  mutate(across(all_of(kolom_y_positif), ~ ifelse(. == "Ya",    1, 0))) %>%
+  mutate(across(all_of(kolom_y_negatif), ~ ifelse(. == "Tidak", 1, 0))) %>%
+  select(kondisi, all_of(kolom_y_semua)) %>%
+  pivot_longer(cols = -kondisi, names_to = "variabel_asli", values_to = "skor") %>%
+  group_by(kondisi, variabel_asli) %>%
+  summarise(persentase = round(mean(skor, na.rm = TRUE) * 100, 1), .groups = "drop") %>%
+  mutate(nama_indikator = label_y[variabel_asli])
+
+# Urutan indikator berdasarkan rata-rata
+urutan_ind2 <- data_pilar2 %>%
+  group_by(nama_indikator) %>%
+  summarise(avg = mean(persentase)) %>%
+  arrange(avg) %>%
+  pull(nama_indikator)
+
+data_pilar2$nama_indikator <- factor(data_pilar2$nama_indikator, levels = urutan_ind2)
+
+d2_baik   <- data_pilar2 %>% filter(kondisi == "Baik")
+d2_kurang <- data_pilar2 %>% filter(kondisi == "Kurang")
+
+# ------------------------------------------------------------------------------
+# 4. PLOT
+# ------------------------------------------------------------------------------
+plot_ly() %>%
+  add_bars(
+    data          = d2_kurang,
+    x             = ~persentase,
+    y             = ~nama_indikator,
+    orientation   = "h",
+    name          = paste0("Kurang (n=", n2_kurang, ")"),
+    marker        = list(color = "#bdc3c7"),
+    text          = ~paste0(persentase, "%"),
+    textposition  = "outside",
+    hovertemplate = "<b>%{y}</b><br>Kontrol Gadget: Kurang<br>Capaian Positif: %{x}%<extra></extra>"
+  ) %>%
+  add_bars(
+    data          = d2_baik,
+    x             = ~persentase,
+    y             = ~nama_indikator,
+    orientation   = "h",
+    name          = paste0("Baik (n=", n2_baik, ")"),
+    marker        = list(color = "#2980b9"),
+    text          = ~paste0(persentase, "%"),
+    textposition  = "outside",
+    hovertemplate = "<b>%{y}</b><br>Kontrol Gadget: Baik<br>Capaian Positif: %{x}%<extra></extra>"
+  ) %>%
+  layout(
+    barmode = "group",
+    title = list(
+      text = "<b>Pilar 2: Kontrol Atensi Digital (Gadget)</b><br><sup>Perbandingan Capaian Positif Indikator Kualitas Belajar (Y)</sup>",
+      font = list(size = 15, color = "#2980b9")
+    ),
+    xaxis = list(
+      title      = "Persentase Capaian Positif (%)",
+      range      = c(0, 120),
+      ticksuffix = "%"
+    ),
+    yaxis  = list(title = ""),
+    legend = list(orientation = "h", x = 0.25, y = -0.15),
+    margin = list(l = 10, r = 60, t = 90, b = 70),
+    annotations = list(list(
+      text = paste0(
+        "Kondisi Baik = Tidak Overuse Gadget + Tidak Terdistraksi + Mampu Kontrol | ",
+        "Total responden: ", nrow(df), " | Sumber: Data Kelompok 5"
+      ),
+      xref      = "paper", yref = "paper",
+      x = 0.5,  y = -0.22,
+      showarrow = FALSE,
+      font      = list(size = 10, color = "#95a5a6"),
+      xanchor   = "center"
+    ))
+  )
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Interpretasi:
+
+Berdasarkan Grouped Horizontal Bar Chart Pilar 2, terlihat perbedaan nyata persentase kualitas belajar ($Y$) antara mahasiswa dengan Kontrol Gadget **"Baik"** (mampu membatasi HP & tidak mudah terdistraksi saat belajar) dibandingkan dengan kelompok yang **"Kurang"**.
+
+* **Fokus Terfragmentasi (Indikator: Konsentrasi Lama, Mudah Mengingat):** Mahasiswa kelompok Kurang menunjukkan penurunan drastis pada kemampuan fokus. Setiap kali mahasiswa melirik HP karena notifikasi, otak mengalami *cognitive switching cost* sehingga perhatian menjadi terpecah-pecah (*fragmented attention*) dan materi sulit masuk ke ingatan jangka panjang.
+
+* **Pemborosan Waktu Belajar (Indikator: Waktu Efektif, Tugas Tanpa Kesulitan):** Kelompok yang sering terdistraksi merasa waktu belajar tidak efektif dan tugas terasa jauh lebih sulit, karena proses berpikir logis sering terputus di tengah jalan akibat distraksi gadget.
+
+* **Proses Belajar Berantakan (Indikator: Belajar Terencana, Belajar Konsisten):** Ketidakmampuan mengontrol gadget membuat manajemen belajar mahasiswa menjadi impulsif dan tidak terarah. Waktu belajar habis untuk *scrolling* tanpa sadar, sehingga hasil akademik tidak maksimal dan tidak sesuai ekspektasi.
+
+Row
+-----------------------------------------------------------------------
+
+### Olahraga
+
+```{r visualisasi_pilar3, fig.width=10, fig.height=6, fig.align='center'}
+# ==============================================================================
+# PILAR 3: KEBUGARAN FISIK (AKTIVITAS OLAHRAGA)
+# X: Olahraga + Waktu Fisik + Fokus Setelah Olahraga
+# Y: 5 indikator yang relevan dengan aktivitas fisik
+# ==============================================================================
+
+library(dplyr)
+library(tidyr)
+library(plotly)
+library(knitr)
+library(kableExtra)
+
+# ------------------------------------------------------------------------------
+# 0. DEFINISI KOLOM
+# ------------------------------------------------------------------------------
+kolom_olahraga    <- "saya_berolahraga_minimal_satu_kali_dalam_seminggu"
+kolom_waktu_fisik <- "saya_meluangkan_waktu_khusus_untuk_melakukan_aktivitas_fisik"
+kolom_fokus_fisik <- "saya_merasa_lebih_fokus_setelah_berolahraga"
+
+var_x_pilar3 <- c(kolom_olahraga, kolom_waktu_fisik, kolom_fokus_fisik)
+
+label_x_pilar3 <- c(
+  "saya_berolahraga_minimal_satu_kali_dalam_seminggu"          = "Olahraga Min. 1x/Minggu",
+  "saya_meluangkan_waktu_khusus_untuk_melakukan_aktivitas_fisik" = "Luangkan Waktu Aktivitas Fisik",
+  "saya_merasa_lebih_fokus_setelah_berolahraga"                = "Merasa Lebih Fokus Setelah Olahraga"
+)
+
+# 5 Variabel Y yang relevan dengan aktivitas fisik
+kolom_y3_positif <- c(
+  "saya_mampu_berkonsentrasi_dalam_waktu_lama_saat_belajar",
+  "saya_mudah_mengingat_materi_perkuliahan",
+  "waktu_belajar_saya_digunakan_secara_efektif",
+  "saya_merasa_proses_belajar_saya_terarah_dan_terencana"
+)
+kolom_y3_negatif <- c(
+  "saya_sering_merasa_mengantuk_saat_mengikuti_perkuliahan"
+)
+kolom_y3_semua <- c(kolom_y3_positif, kolom_y3_negatif)
+
+label_y3 <- c(
+  "saya_mampu_berkonsentrasi_dalam_waktu_lama_saat_belajar"  = "Konsentrasi Lama",
+  "saya_mudah_mengingat_materi_perkuliahan"                  = "Mudah Mengingat",
+  "waktu_belajar_saya_digunakan_secara_efektif"              = "Waktu Belajar Efektif",
+  "saya_merasa_proses_belajar_saya_terarah_dan_terencana"    = "Belajar Terencana",
+  "saya_sering_merasa_mengantuk_saat_mengikuti_perkuliahan"  = "Gak Gampang Ngantuk"
+)
+
+# ------------------------------------------------------------------------------
+# 2. KONDISI: Baik = olahraga rutin + luangkan waktu fisik
+# ------------------------------------------------------------------------------
+n_kondisi3 <- df %>%
+  mutate(kondisi = ifelse(
+    .data[[kolom_olahraga]]    == "Ya" &
+    .data[[kolom_waktu_fisik]] == "Ya",
+    "Baik", "Kurang"
+  )) %>%
+  count(kondisi)
+
+n3_baik   <- ifelse("Baik"   %in% n_kondisi3$kondisi, n_kondisi3$n[n_kondisi3$kondisi == "Baik"],   0)
+n3_kurang <- ifelse("Kurang" %in% n_kondisi3$kondisi, n_kondisi3$n[n_kondisi3$kondisi == "Kurang"], 0)
+
+# ------------------------------------------------------------------------------
+# 3. PREPROCESSING SKOR
+# ------------------------------------------------------------------------------
+data_pilar3 <- df %>%
+  mutate(kondisi = ifelse(
+    .data[[kolom_olahraga]]    == "Ya" &
+    .data[[kolom_waktu_fisik]] == "Ya",
+    "Baik", "Kurang"
+  )) %>%
+  mutate(across(all_of(kolom_y3_positif), ~ ifelse(. == "Ya",    1, 0))) %>%
+  mutate(across(all_of(kolom_y3_negatif), ~ ifelse(. == "Tidak", 1, 0))) %>%
+  select(kondisi, all_of(kolom_y3_semua)) %>%
+  pivot_longer(cols = -kondisi, names_to = "variabel_asli", values_to = "skor") %>%
+  group_by(kondisi, variabel_asli) %>%
+  summarise(persentase = round(mean(skor, na.rm = TRUE) * 100, 1), .groups = "drop") %>%
+  mutate(nama_indikator = label_y3[variabel_asli])
+
+# Urutan indikator
+urutan_ind3 <- data_pilar3 %>%
+  group_by(nama_indikator) %>%
+  summarise(avg = mean(persentase)) %>%
+  arrange(avg) %>%
+  pull(nama_indikator)
+
+data_pilar3$nama_indikator <- factor(data_pilar3$nama_indikator, levels = urutan_ind3)
+
+d3_baik   <- data_pilar3 %>% filter(kondisi == "Baik")
+d3_kurang <- data_pilar3 %>% filter(kondisi == "Kurang")
+
+# ------------------------------------------------------------------------------
+# 4. PLOT
+# ------------------------------------------------------------------------------
+plot_ly() %>%
+  add_bars(
+    data          = d3_kurang,
+    x             = ~persentase,
+    y             = ~nama_indikator,
+    orientation   = "h",
+    name          = paste0("Kurang (n=", n3_kurang, ")"),
+    marker        = list(color = "#bdc3c7"),
+    text          = ~paste0(persentase, "%"),
+    textposition  = "outside",
+    hovertemplate = "<b>%{y}</b><br>Kebugaran: Kurang<br>Capaian Positif: %{x}%<extra></extra>"
+  ) %>%
+  add_bars(
+    data          = d3_baik,
+    x             = ~persentase,
+    y             = ~nama_indikator,
+    orientation   = "h",
+    name          = paste0("Baik (n=", n3_baik, ")"),
+    marker        = list(color = "#27ae60"),
+    text          = ~paste0(persentase, "%"),
+    textposition  = "outside",
+    hovertemplate = "<b>%{y}</b><br>Kebugaran: Baik<br>Capaian Positif: %{x}%<extra></extra>"
+  ) %>%
+  layout(
+    barmode = "group",
+    title = list(
+      text = "<b>Pilar 3: Kebugaran Fisik (Aktivitas Olahraga)</b><br><sup>Perbandingan Capaian Positif Indikator Kualitas Belajar (Y)</sup>",
+      font = list(size = 15, color = "#27ae60")
+    ),
+    xaxis = list(
+      title      = "Persentase Capaian Positif (%)",
+      range      = c(0, 120),
+      ticksuffix = "%"
+    ),
+    yaxis  = list(title = ""),
+    legend = list(orientation = "h", x = 0.25, y = -0.15),
+    margin = list(l = 10, r = 60, t = 90, b = 70),
+    annotations = list(list(
+      text = paste0(
+        "Kondisi Baik = Olahraga Min. 1x/Minggu & Luangkan Waktu Aktivitas Fisik | ",
+        "Total responden: ", nrow(df), " | Sumber: Data Kelompok 5"
+      ),
+      xref      = "paper", yref = "paper",
+      x = 0.5,  y = -0.22,
+      showarrow = FALSE,
+      font      = list(size = 10, color = "#95a5a6"),
+      xanchor   = "center"
+    ))
+  )
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Interpretasi:
+
+Berdasarkan Grouped Horizontal Bar Chart Pilar 3, data menunjukkan korelasi positif antara mahasiswa dengan Kebugaran Fisik **"Baik"** (rutin olahraga minimal 1x seminggu & meluangkan waktu fisik khusus) terhadap capaian indikator kualitas belajar ($Y$).
+
+* **Ketahanan Otak & Fokus Meningkat (Indikator: Konsentrasi Lama, Gak Gampang Ngantuk):** Mahasiswa yang rajin berolahraga memiliki ketahanan fokus lebih tinggi di kelas. Aktivitas fisik rutin meningkatkan sirkulasi darah dan suplai oksigen ke otak, serta memicu pelepasan BDNF (*Brain-Derived Neurotrophic Factor*) yang mendukung kerja sel saraf, sehingga mahasiswa tidak mudah lelah saat mencerna materi kuliah berat.
+
+* **Reduksi Stres saat Mengerjakan Tugas (Indikator: Tugas Tanpa Kesulitan, Belajar Terencana):** Kelompok dengan kebugaran fisik Baik merasa tidak begitu tertekan saat menyelesaikan tugas. Olahraga terbukti efektif mereduksi hormon kortisol (pemicu stres) dan meningkatkan endorfin serta dopamin, sehingga mahasiswa memiliki regulasi emosi lebih stabil dan tidak cepat frustrasi saat menghadapi tugas sulit.
+
+* **Konsistensi Gaya Hidup (Indikator: Belajar Konsisten, Aktif di Kelas):** Mahasiswa yang mampu mendisiplinkan diri untuk berolahraga di tengah kesibukan kuliah cenderung memiliki *self-discipline* lebih baik dalam mengatur jadwal harian. Pola hidup aktif ini secara tidak langsung membentuk kebiasaan belajar yang lebih terstruktur dan konsisten.
+
+
+Kesimpulan {data-orientation=rows}
+=======================================================================
+
+Row
+-----------------------------------------------------------------------
+
+### Kesimpulan
+
+Berdasarkan seluruh rangkaian analisis deskriptif dan visualisasi interaktif yang telah dilakukan terhadap data survei mahasiswa, kelompok kami menarik beberapa kesimpulan utama sebagai berikut:
+
+Row
+-----------------------------------------------------------------------
+
+### 1. Profil Demografi Responden
+
+  * Survei ini berhasil menjaring keterwakilan sampel yang heterogen dan representatif dari 9 program studi, dengan dominasi utama dari program studi Sains Data dan Informatika.
+
+  * Efisiensi penyajian data berhasil ditingkatkan dengan melebur prodi yang hanya memiliki 1 responden ke dalam kategori "Prodi Lainnya" guna menghindari bias analisis dan menjaga proporsi visualisasi tetap bersih.
+
+Row
+-----------------------------------------------------------------------
+
+### 2. Potret Gaya Hidup Responden (Variabel Mandiri)
+
+Kondisi dasar gaya hidup mahasiswa yang berhasil dipotret menunjukkan adanya tantangan besar dalam manajemen regulasi diri:
+
+  * Krisis Waktu Istirahat: Mayoritas responden mengalami kekurangan tidur (tidak memenuhi kuota ideal 7-8 jam sehari) yang diakibatkan oleh tingginya beban aktivitas akademik maupun aktivitas non-akademik di malam hari.
+
+  * Kurangnya Aktivitas Fisik: Pola hidup kurang gerak (sedentary lifestyle) sangat mendominasi, di mana sebagian besar mahasiswa tidak rutin berolahraga minimal satu kali dalam seminggu akibat padatnya jadwal kuliah duduk di kelas.
+
+  * Tingginya Distraksi Gadget: Sebagian besar responden mengaku kesulitan mengontrol penggunaan gawai (handphone/gadget) saat proses belajar sedang berlangsung.
+
+Row
+-----------------------------------------------------------------------
+
+### 3. Dampak Nyata terhadap Kualitas Belajar (Pemahaman Materi)
+
+Melalui analisis indikator kualitas belajar, ditemukan bukti empiris bahwa gaya hidup berpengaruh langsung terhadap performa kognitif mahasiswa:
+
+  * Istirahat yang cukup bertindak sebagai kunci retensi memori; mahasiswa yang kurang tidur terbukti lebih sulit mengingat materi kuliah dan gampang mengantuk.
+
+  * Aktivitas fisik yang terjaga memberikan stabilitas stamina dan kebugaran mental yang membuat otak lebih siap menyerap materi kuliah yang berat.
+
+  * Kontrol gadget menjadi filter distraksi paling krusial. Mahasiswa yang mampu membatasi gawai berhasil mencapai tingkat pemahaman materi tertinggi (deep work), sedangkan yang gagal mengontrol gadget mengalami pemecahan konsentrasi sehingga proses belajarnya menjadi tidak efektif.
